@@ -70,9 +70,17 @@ function renderCubes(time, renderer, camera, cubes, scene) {
 	requestAnimationFrame((t) => renderCubes(t, renderer, camera, cubes, scene));
 }
 
+function createCanvas() {
+	const canvas = document.createElement('canvas');
+	canvas.id = "game-canvas"
+	document.body.appendChild(canvas)
+
+	return canvas
+}
+
 class Game {
 	constructor() {
-		const canvas = document.querySelector('#c');
+		const canvas = createCanvas();
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		const scene = new THREE.Scene();
 	
