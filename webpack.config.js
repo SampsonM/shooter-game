@@ -7,7 +7,6 @@ module.exports = {
   // Configures which files webpack should look at to bundle
   entry: {
     index: './src/index.js',
-    game: './src/services/Game.js'
   },
 
   // Configures the shape and condition of output files and directory
@@ -39,6 +38,10 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       },
     ],
   },
