@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: 'development',
@@ -21,7 +22,10 @@ module.exports = {
   
   // config for webpack-dev-server
   devServer: {
-    static: './dist',
+    static: { 
+      directory: path.resolve(__dirname, './src/assets'), 
+      publicPath: '/assets'
+    }
   },
 
   // plugins to run against files, assets, fonts etc
@@ -29,6 +33,12 @@ module.exports = {
     // Creates a html file in the dist folder
     new HtmlWebpackPlugin({
       title: 'Shooter Game',
+    }),
+
+    new CopyPlugin({
+      patterns: [
+        { from: "assets/**/*", to: "", context: "src" },
+      ],
     }),
   ],
 
@@ -40,7 +50,7 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.(png|svg|jpg|jpeg)$/i,
         type: 'asset/resource',
       },
     ],

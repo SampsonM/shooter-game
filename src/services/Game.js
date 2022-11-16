@@ -3,10 +3,10 @@ import World from './World';
 
 class Game {
 	constructor() {
-		const renderer = this.#createRenderer();
-		const world = World.getInstance(renderer);
+		this.renderer = this.#createRenderer();
+		this.world = World.getInstance(this.renderer);
 
-		this.#render(1000, renderer, world.camera, world.scene)
+		this.#render()
 	}
 
 	#createCanvas() {
@@ -19,7 +19,7 @@ class Game {
 
 	#createRenderer() {
 		const canvas = this.#createCanvas();
-		const renderer = new THREE.WebGLRenderer({ canvas });
+		const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -30,31 +30,29 @@ class Game {
 		return renderer
 	}
 
-	#shouldResizeRender(renderer) {
-		const { width, height, clientWidth, clientHeight } = renderer.domElement;
+	#shouldResizeRender() {
+		const { width, height, clientWidth, clientHeight } = this.renderer.domElement;
 		return width !== clientWidth || height !== clientHeight;
 	}
 
-	#resizeRenderer(renderer) {
-		const { clientWidth, clientHeight } = renderer.domElement;
-		renderer.setSize(clientWidth, clientHeight, false);
+	#resizeRenderer() {
+		const { clientWidth, clientHeight } = this.renderer.domElement;
+		this.renderer.setSize(clientWidth, clientHeight, false);
 	}
 
-	#render(time, renderer, camera, scene) {
-		time *= 0.001;  // convert time to seconds
+	#render() {
+		if (this.#shouldResizeRender()) {
+			this.#resizeRenderer()
 
-		if (this.#shouldResizeRender(renderer)) {
-			this.#resizeRenderer(renderer)
-
-			const { clientWidth, clientHeight } = renderer.domElement
-			camera.aspect = clientWidth / clientHeight;
-			camera.updateProjectionMatrix();
+			const { clientWidth, clientHeight } = this.renderer.domElement
+			this.world.camera.aspect = clientWidth / clientHeight;
+			this.world.camera.updateProjectionMatrix();
 		}
 
-		renderer.render(scene, camera);
+		this.renderer.render(this.world.scene, this.world.camera);
 		console.log('rendering')
 
-		// requestAnimationFrame((t) => this.#render(t, renderer, camera, scene));
+		requestAnimationFrame(() => this.#render());
 	}
 }
 
